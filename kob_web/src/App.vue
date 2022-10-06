@@ -10,8 +10,8 @@
 
   export default {
     components:{
-    NavBar,
-    }
+      NavBar,
+    },
   }
 
 </script>
