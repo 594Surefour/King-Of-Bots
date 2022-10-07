@@ -71,8 +71,6 @@ export class Snake extends GameObject{
         if(!this.gamemap.check_valid(this.next_cell)){
             this.status = "die";
         }
-
-
     }
 
     update_move() { 

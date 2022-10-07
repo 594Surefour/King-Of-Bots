@@ -5,70 +5,24 @@
 ![截屏2022-09-17 10.44.47](./assets/截屏2022-09-17 10.44.47.png)
 
 →项目包含的模块
-	PK模块：匹配界面（微服务）、实况直播界面（WebSocket协议）
-	对局列表模块：对局列表界面、对局录像界面
-	排行榜模块：Bot排行榜界面
-	用户中心模块：注册界面、登录界面、我的Bot界面、每个Bot的详情界面
+
+​	PK模块：匹配界面（微服务）、实况直播界面（WebSocket协议）
+
+​	对局列表模块：对局列表界面、对局录像界面
+
+​	排行榜模块：Bot排行榜界面
+
+​	用户中心模块：注册界面、登录界面、我的Bot界面、每个Bot的详情界面
+
 →前后端分离模式
-	SpringBoot实现后端
-	Vue3实现Web端和AcApp端
+
+​	SpringBoot实现后端
+
+​	Vue3实现Web端和AcApp端
 
 
 
-## [2]环境配置
-
-在SpringBoot中解决跨域问题
-添加配置类：CorsConfig
-
-```java
-package com.kob.backend.config;
-
-import org.springframework.context.annotation.Configuration;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-@Configuration
-public class CorsConfig implements Filter {
-    @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-        HttpServletResponse response = (HttpServletResponse) res;
-        HttpServletRequest request = (HttpServletRequest) req;
-
-        String origin = request.getHeader("Origin");
-        if(origin!=null) {
-            response.setHeader("Access-Control-Allow-Origin", origin);
-        }
-
-        String headers = request.getHeader("Access-Control-Request-Headers");
-        if(headers!=null) {
-            response.setHeader("Access-Control-Allow-Headers", headers);
-            response.setHeader("Access-Control-Expose-Headers", headers);
-        }
-
-        response.setHeader("Access-Control-Allow-Methods", "*");
-        response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-
-        chain.doFilter(request, response);
-    }
-
-    @Override
-    public void init(FilterConfig filterConfig) {
-
-    }
-
-    @Override
-    public void destroy() {
-    }
-}
-```
-
-
-
-## [3]创建菜单与游戏界面
+## [2]创建菜单与游戏界面
 
 1、把所有游戏对象都存下
 
@@ -93,15 +47,12 @@ export class GameObject{
     }
 
     start() {
-
     }
 
     update() { 
-
     }
 
     on_destory() {
-
     }
 
     destory() {
@@ -340,29 +291,87 @@ this.rows = 13; this.cols = 14;
 
 8.创建蛇的类 snake.js
 
+定义蛇的初始状态和其他属性
 
+```javascript
+export class Snake extends GameObject{
+    constructor(info, gamemap) {
+        super();
 
-9.实现移动
+        this.id = info.id;
+        this.color = info.color;
+        this.gamemap = gamemap;
+        
+        this.cells = [new Cell(info.r, info.c)];//存放蛇的身体，index=0为蛇头
+        this.next_cell = null;
+        this.step = 0;
+        this.eps = 1e-2;
 
+        this.speed = 5;//蛇每秒走5个格子
+        this.direction = -1; //-1表示无指令， 0 1 2 3表示上右下左的移动方向
+        this.status = "idle"; //静止状态 move表示移动 die表示死亡
 
+        this.dr = [1, 0, -1, 0];//行偏移量
+        this.dc = [0, 1, 0, -1];//列偏移量
+
+        this.eye_direction = 0;
+        if(this.id === 1)
+            this.eye_direction = 2;
+
+        this.eye_dx = [
+            [-1, 1],
+            [1, 1],
+            [1, -1],
+            [-1, -1]
+        ];
+        this.eye_dy = [
+            [-1, -1],
+            [-1, 1],
+            [1, 1],
+            [-1, 1]
+        ];
+    }
+}
+```
+
+9.实现移动+蛇长度增加判断
+
+```javascript
+
+```
 
 10.优化蛇身
 
+```javascript
 
+```
 
-11.增加碰撞检测
+11.增加碰撞检测 即死亡判定
 
-
+```js
+if(!this.gamemap.check_valid(this.next_cell)){
+  this.status = "die";
+}
+```
 
 12.添加蛇眼睛
 
+```js
+ctx.fillStyle = "black";
+for(let i = 0; i < 2; i++){
+  const eye_x = (this.cells[0].x + this.eye_dx[this.eye_direction][i] * 0.15) * L;
+  const eye_y = (this.cells[0].y + this.eye_dy[this.eye_direction][i] * 0.15) * L;
+  ctx.beginPath();
+  ctx.arc(eye_x, eye_y, L * 0.05, 0, Math.PI * 2);
+  ctx.fill();
+}
+```
 
 
 
 
 
-
-## [4]MySql数据库与注册登录
+## [3]MySql数据库与注册登录
 
 #### (1)mysql命令行指令
 
@@ -401,10 +410,14 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 ```
 
 (2-3)SpringBoot中的常用模块
-	pojo层：将数据库中的表对应成Java中的Class
-	mapper层（也叫Dao层）：将pojo层的class中的操作，映射成sql语句
-	service层：写具体的业务逻辑，组合使用mapper中的操作
-	controller层：负责请求转发，接受页面过来的参数，传给Service处理，接到返回值，再传给页面
+
+​	pojo层：将数据库中的表对应成Java中的Class
+
+​	mapper层（也叫Dao层）：将pojo层的class中的操作，映射成sql语句
+
+​	service层：写具体的业务逻辑，组合使用mapper中的操作
+
+​	controller层：负责请求转发，接受页面过来的参数，传给Service处理，接到返回值，再传给页面
 
 (2-4)spring-security
 
@@ -506,55 +519,214 @@ public class SecurityConfig {
 
 (2-5)jwt验证
 
-不需要跨域、不需要在服务区端存储
+优点：不需要跨域、不需要在服务区端存储
 
 ​	pom.xml中添加3个依赖：
 ​		jjwt-api、jjwt-impl、jjwt-jackson
 
 ​	创建3个工具类：
+
 ​		实现utils.JwtUtil类，为jwt工具类，用来创建、解析jwt token
+
 ​		实现config.filter.JwtAuthenticationTokenFilter类，用来验证jwt token，如果验证成功，则将User信息注入上下文中
+
 ​		配置config.SecurityConfig类，放行登录、注册等接口
 
-(2-6)编写API
+#### (3) 业务逻辑
 
-实现/user/account/token/：验证用户名密码，验证成功后返回jwt token（令牌）
-实现/user/account/info/：根据令牌返回用户信息
-实现/user/account/register/：注册账号
+(3-1) 登录注册
+
+​	(3-1-1) 实现/user/account/token/：验证用户名密码，验证成功后返回jwt token（令牌）, service.user.account中LoginService, service.impl.user.account中LoginServiceImpl, controller.user.account中LoginController
+
+​	(3-1-2) 实现/user/account/info/：根据令牌返回用户信息, service.user.account中LoginService, service.impl.user.account中LoginServiceImpl, controller.user.account中LoginController
+
+​	(3-1-3) 实现/user/account/register/：注册账号, service.user.account中RegisterService, service.impl.user.account中RegisterServiceImpl, controller.user.account中RegisterController
+
+​	(3-1-4) 在router/index.js中添加以上三个页面的路由
+
+```javascript
+{
+    path: "/user/bot/",
+    name: "user_bot_index",
+    component: UserBotIndex,
+    meta: {
+      requestAuth: true,
+    }
+  },
+  {
+    path: "/user/account/login/",
+    name: "user_account_login",
+    component: UserLoginView,
+    meta: {
+      requestAuth: false,
+    }
+  },
+  {
+    path: "/user/account/register/",
+    name: "user_account_register",
+    component: UserRegisterView,
+     meta: {
+      requestAuth: false,
+    }
+  },
+```
+
+在views/user/account下实现UserLoginView.vue UserRegisterView.vue 对应注册、登录界面
+
+
+
+(3-2) 前端拦截器，避免不注册/登录也可以访问其他页面
+
+​	在router/index.js中 对每个路由添加属性
+
+```javascript
+meta: {
+  requestAuth: true,
+}
+```
+
+true代表未登录无法访问
+
+
+
+(3-3) 登录状态持久化
+
+​	当我们的用户重定向到登陆页面的时候,我们可以事先判断一下他们有没有将token存在本地：如果存在本地就把token取出来,验证一下是否过期；如果没有过期，用户就不需要重新登陆了,可以直接跳转到首页
+​	刷新之后其实是一个未登录状态,自动先跳到我们的登录页面，先从本地把我们的token取出来,发现token存在把token更新到我们的内存当中,然后再从云端请求下这个用户的信息；如果可以请求的信息表示我们的token，是有效的，表示用户是登录的，我们就可以跳转到首页
+
+```javascript
+const jwt_token = localStorage.getItem("jwt_token");
+if (jwt_token) {
+  store.commit("updateToken", jwt_token);
+  store.dispatch("getinfo", {
+    success() {
+      router.push({ name: "home" });
+      store.commit("updatePullingInfo", false);
+    },
+    error() {
+      store.commit("updatePullingInfo", false);
+    },
+  });
+} else {
+  store.commit("updatePullingInfo", false);
+}
+```
+
+(3-4) 刷新页面时 闪烁登录页面处理+右上角处理
+
+​	在user.js中增加pulling_info: true, //是否正在拉取信息 属性
+
+```javascript
+mutations: {
+  updateUser(state, user) {
+    state.id = user.id;
+    state.username = user.username;
+    state.photo = user.photo;
+    state.is_login = user.is_login;
+  },
+    updateToken(state, token) {
+      state.token = token;
+    },
+      logout(state) {
+        state.id = "";
+        state.username = "";
+        state.photo = "";
+        state.token = "";
+        state.is_login = false;
+      },
+        updatePullingInfo(state, pulling_info){
+          state.pulling_info = pulling_info;
+        }
+},
+```
+
+
+
+## [4]创建个人中心模块
+
+#### (4-1) 创建数据库 + 实体类
+
+​	在数据库增加表 bot
+
+![截屏2022-10-07 20.58.22](assets/截屏2022-10-07 20.58.22.png)
+
+表中包含的列：
+
+id: int：非空、自动增加、唯一、主键
+user_id: int：非空
+注意：在pojo中需要定义成userId，在queryWrapper中的名称仍然为user_id
+title: varchar(100)
+description: varchar(300)
+content：varchar(10000)
+rating: int：默认值为1500
+createtime: datetime
+pojo中定义日期格式的注解：@JsonFormat(pattern = “yyyy-MM-dd HH:mm:ss”)
+modifytime: datetime
+pojo中定义日期格式的注解：@JsonFormat(pattern = “yyyy-MM-dd HH:mm:ss”)
+
+```java
+package com.kob.pojo;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Bot {
+    @TableId(type = IdType.AUTO)
+    private Integer id;
+    private Integer userId;
+    private String title;
+    private String description;
+    private String content;
+    private Integer rating;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    private Date createtime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
+    private Date modifytime;
+}
+```
+
+#### (4-2) 实现后端增删改查API
+
+​	(4-2-1) /user/bot/add/：创建一个Bot, service.user.bot中AddService, service.impl.user.bot中AddServiceImpl, controller.user.bot中AddController
+
+​	(4-2-2) /user/bot/remove/：删除一个Bot, service.user.bot中RemoveService, service.impl.user.bot中RemoveServiceImpl, controller.user.bot中RemoveController
+
+​	(4-2-3) /user/bot/update/：修改一个Bot, service.user.bot中UpdataService, service.impl.user.bot中UpdataServiceImpl, controller.user.bot中UpdataController
+
+​	(4-2-4) /user/bot/getlist/：查询Bot列表, service.user.bot中GetListService, service.impl.user.bot中GetListServiceImpl, controller.user.bot中GetListController
+
+(4-3) 个人信息中Bot展示前端
+
+1、获取头像+获取Bot列表
+2、对接获取Bot信息+渲染到前端
+3、实现创建一个Bot
+4、前端进行对接插入Bot
+5、实现创建成功关闭和清空
+6、修改时间
+7、实现删除按钮
+8、安装依赖：vue3-ace-editor
+
+
+
+## [5]实现微服务：匹配系统
 
 
 
 
 
-## [5]创建个人中心模块
-
-实现后端API
-/user/bot/add/：创建一个Bot
-/user/bot/remove/：删除一个Bot
-/user/bot/update/：修改一个Bot
-/user/bot/getlist/：查询Bot列表
+## [6]实现微服务：Bot代码的执行
 
 
 
-
-
-## [6]实现微服务：匹配系统
-
-
-
-## [7]实现微服务：Bot代码的执行
+## [7]创建对战列表与排行榜
 
 
 
-## [8]创建对战列表与排行榜
+## [8]项目上线
 
 
 
-## [9]项目上线
-
-
-
-## [10]App端
+## [9]App端
 
 
 
