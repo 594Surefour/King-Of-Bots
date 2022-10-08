@@ -18,7 +18,7 @@
 
 <style>
   body{
-    background-image: url("./assets/images/background.png");
+    background-image: url("./assets/images/background-ow.jpg");
     background-size: cover;
   }
 </style>
