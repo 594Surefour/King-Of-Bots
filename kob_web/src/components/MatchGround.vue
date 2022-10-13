@@ -12,7 +12,7 @@
       <div class="col-4">
         <div class="user-select-bot">
           <select v-model="select_bot" class="form-select" aria-label="Default select example">
-            <option value="-1" selected>亲自上阵</option>
+            <option value="-1" selected>御驾亲征</option>
             <option v-for="bot in bots" :key="bot.id" :value="bot.id">
               {{ bot.title }}
             </option>
