@@ -1,5 +1,6 @@
 package com.kob.service.Impl.user.bot;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kob.mapper.BotMapper;
 import com.kob.pojo.Bot;
 import com.kob.pojo.User;
@@ -55,6 +56,14 @@ public class AddServiceImpl implements AddService {
             map.put("error_message","代码的长度不能超过10000");
             return map;
         }
+
+        QueryWrapper<Bot> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", user.getId());
+        if(botMapper.selectCount(queryWrapper) == 10){
+            map.put("error_message","解锁VIP后可以添加更多Bot哦～");
+            return map;
+        }
+
         Date now = new Date();
         Bot bot = new Bot(null, user.getId(), title, description, content, now,now);
 

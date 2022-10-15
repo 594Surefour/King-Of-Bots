@@ -3,6 +3,7 @@ import NotFound from "@/views/error/NotFound.vue";
 import PkIndexView from "@/views/pk/PkIndexView.vue";
 import RankListIndexView from "@/views/ranklist/RankListIndexView.vue";
 import RecordIndexView from "@/views/record/RecordIndexView.vue";
+import RecordContentView from "@/views/record/RecordContentView.vue";
 import UserBotIndex from "@/views/user/bot/UserBotIndex.vue";
 import UserLoginView from "@/views/user/account/UserLoginView.vue";
 import UserRegisterView from "@/views/user/account/UserRegisterView.vue";
@@ -29,6 +30,14 @@ const routes = [
     path: "/record/",
     name: "record_index",
     component: RecordIndexView,
+    meta: {
+      requestAuth: true,
+    }
+  },
+  {
+    path: "/record/:recordId",
+    name: "record_content",
+    component: RecordContentView,
     meta: {
       requestAuth: true,
     }
