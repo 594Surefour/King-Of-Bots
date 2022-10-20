@@ -6,6 +6,26 @@
 
 
 
+<img src="assets/1.png" alt="1" style="zoom:40%;" />
+
+<img src="assets/2.png" alt="2" style="zoom:40%;" />
+
+<img src="assets/3.png" alt="3" style="zoom:40%;" />
+
+<img src="assets/4.png" alt="4" style="zoom:40%;" />
+
+<img src="assets/5.png" alt="5" style="zoom:40%;" />
+
+<img src="assets/6.png" alt="6" style="zoom:40%;" />
+
+<img src="assets/7.png" alt="7" style="zoom:40%;" />
+
+
+
+
+
+
+
 ## [1]项目简介
 
 ![截屏2022-09-17 10.44.47](./assets/截屏2022-09-17 10.44.47.png)
