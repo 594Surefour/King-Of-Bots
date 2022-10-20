@@ -2,7 +2,7 @@
 
 项目运行展示：
 
-<img src="./game.mp4"></img>
+<img src="./game720.mov"></img>
 
 
 
